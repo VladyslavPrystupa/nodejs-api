@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const app = require('./app');
+require('dotenv').config();
 
-// mongoose.set('strictQuery', false);
+mongoose.set('strictQuery', false);
 
 const { DB_HOST, PORT } = process.env;
 
