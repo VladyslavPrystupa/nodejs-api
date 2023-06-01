@@ -1,4 +1,6 @@
 const express = require('express');
+const jsonParser = express.json();
+
 const router = express.Router();
 const {
   get,
@@ -7,17 +9,17 @@ const {
   updById,
   removeById,
   updateStatus,
-} = require('../../controller');
+} = require('../../controllers/contscts');
 
 router.get('/', get);
 
 router.get('/:id', getById);
 
-router.post('/', create);
+router.post('/', jsonParser, create);
 
-router.put('/:id', updById);
+router.put('/:id', jsonParser, updById);
 
-router.patch('/:contactId/favorite', updateStatus);
+router.patch('/:contactId/favorite', jsonParser, updateStatus);
 
 router.delete('/:id', removeById);
 

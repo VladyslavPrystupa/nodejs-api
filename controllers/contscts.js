@@ -5,7 +5,7 @@ const {
   updContactById,
   removeContact,
   updateStatusContact,
-} = require('../service');
+} = require('../service/models/contsctsModels');
 
 const { HttpError, JoiSchema } = require('../utils');
 
