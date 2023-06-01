@@ -7,7 +7,7 @@ const {
   updateStatusContact,
 } = require('../service/models/contsctsModels');
 
-const { HttpError, JoiSchema } = require('../utils');
+const { HttpError, contactsSchema } = require('../utils');
 
 const get = async (req, res, next) => {
   try {
@@ -45,9 +45,9 @@ const getById = async (req, res, next) => {
 
 const create = async (req, res, next) => {
   try {
-    const { error } = JoiSchema.validate(req.body);
+    const { error } = contactsSchema.validate(req.body);
     if (error) {
-      throw HttpError(400, 'missing required name field');
+      throw HttpError(400, error.message);
     }
     const { name, phone, email } = req.body;
 
@@ -65,9 +65,9 @@ const create = async (req, res, next) => {
 
 const updById = async (req, res, next) => {
   try {
-    const { error } = JoiSchema.validate(req.body);
+    const { error } = contactsSchema.validate(req.body);
     if (error) {
-      throw HttpError(400, 'missing required fields');
+      throw HttpError(400, error.message);
     }
     const { id } = req.params;
     const { name, phone, email } = req.body;
@@ -107,9 +107,9 @@ const removeById = async (req, res, next) => {
 
 const updateStatus = async (req, res, next) => {
   try {
-    const { error } = JoiSchema.validate(req.body);
+    const { error } = contactsSchema.validate(req.body);
     if (error) {
-      throw HttpError(400, 'missing field favorite');
+      throw HttpError(400, error.message);
     }
     const { id } = req.params;
     const result = await updateStatusContact(id, req.body);
