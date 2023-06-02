@@ -1,13 +1,6 @@
 const HttpError = require('./httpError');
-const {
-  contactsSchema,
-  userRegisterSchema,
-  userLoginSchema,
-} = require('./JoiSchema');
-
+const validateBody = require('./validateBody');
 module.exports = {
   HttpError,
-  contactsSchema,
-  userRegisterSchema,
-  userLoginSchema,
+  validateBody,
 };
