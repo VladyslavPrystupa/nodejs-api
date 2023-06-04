@@ -1,3 +1,6 @@
 const HttpError = require('./httpError');
-const JoiSchema = require('./JoiSchema');
-module.exports = { HttpError, JoiSchema };
+const validateBody = require('./validateBody');
+module.exports = {
+  HttpError,
+  validateBody,
+};
