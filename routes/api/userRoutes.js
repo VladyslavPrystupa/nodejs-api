@@ -13,7 +13,13 @@ const {
   getCurrent,
   logout,
   updateAvatar,
+  verify,
+  resendVerifyEmail,
 } = require('../../controllers/users');
+
+router.get('/current', authenticate, getCurrent);
+
+router.get('/verify/:verificationToken', verify);
 
 router.post(
   '/register',
@@ -24,7 +30,11 @@ router.post(
 
 router.post('/login', jsonParser, validateBody(schemas.joiLoginSchema), login);
 
-router.get('/current', authenticate, getCurrent);
+router.post(
+  '/verify',
+  validateBody(schemas.joiVerificationSchema),
+  resendVerifyEmail
+);
 
 router.post('/logout', authenticate, logout);
 
