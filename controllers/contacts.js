@@ -46,10 +46,7 @@ const getById = async (req, res, next) => {
 const create = async (req, res, next) => {
   try {
     const { _id: owner } = req.user;
-    console.log(req.body);
     const contact = await Contact.create({ ...req.body, owner });
-
-    console.log('contact: ', contact);
 
     res.status(201).json({
       status: 'success',

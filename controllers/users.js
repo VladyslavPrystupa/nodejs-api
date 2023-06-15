@@ -1,11 +1,17 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const gravatar = require('gravatar');
+const Jimp = require('jimp');
+const path = require('path');
+const fs = require('fs/promises');
+
 const { User } = require('../models/usersModels');
-require('dotenv').config();
+
+const { HttpError } = require('../utils');
 
 const { JWT_SECRET } = process.env;
 
-const { HttpError } = require('../utils');
+const dirAvatarPath = path.join(__dirname, '../', 'public', 'avatars');
 
 const register = async (req, res, next) => {
   try {
@@ -16,9 +22,13 @@ const register = async (req, res, next) => {
       throw new HttpError(409);
     }
     const hashPassword = await bcrypt.hash(password, 10);
+    const avatarURL = gravatar.url(email, {
+      s: '250',
+    });
     const newUser = await User.create({
       ...req.body,
       password: hashPassword,
+      avatarURL,
     });
 
     return res.status(201).json({
@@ -81,4 +91,35 @@ const getCurrent = async (req, res) => {
   res.json({ email, subscription });
 };
 
-module.exports = { register, login, logout, getCurrent };
+const updateAvatar = async (req, res, next) => {
+  try {
+    const { _id } = req.user;
+    const { path: oldPath, originalname } = req.file;
+
+    const fileName = `${_id}_${originalname}`;
+    const avatarNewPath = path.join(dirAvatarPath, fileName);
+
+    const image = await Jimp.read(oldPath);
+    await image
+      .autocrop()
+      .cover(
+        250,
+        250,
+        Jimp.HORIZONTAL_ALIGN_CENTER || Jimp.VERTICAL_ALIGN_MIDDLE
+      )
+      .write(oldPath);
+
+    await fs.rename(oldPath, avatarNewPath);
+
+    const avatarURL = path.join('avatars', fileName);
+    await User.findByIdAndUpdate(_id, { avatarURL });
+
+    res.json({
+      avatarURL,
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+module.exports = { register, login, logout, getCurrent, updateAvatar };
